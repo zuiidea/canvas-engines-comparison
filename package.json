@@ -16,6 +16,7 @@
     "@mesh.js/core": "^1.1.23",
     "@svgdotjs/svg.js": "^3.1.1",
     "canvaskit-wasm": "^0.30.0",
+    "deck.gl": "^8.5.10",
     "fabric": "^4.6.0",
     "fpsmeter": "0.3.1",
     "konva": "8.1.4",

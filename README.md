@@ -1,7 +1,6 @@
 # Canvas Engines Comparison
 
-https://benchmarks.slaylines.io/
-
+https://graphic.surge.sh/
 ## Description
 
 - Up to 8000 different rectangles moving on a canvas with various speed
@@ -9,6 +8,7 @@ https://benchmarks.slaylines.io/
 
 |                                                            | module kb                                                  |
 | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| [DeckGL](https://deck.gl)                                  | ![](https://badgen.net/bundlephobia/min/deck.gl)           |
 | [PixiJS](https://www.pixijs.com)                           | ![](https://badgen.net/bundlephobia/min/pixi.js)           |
 | [Mesh.js](https://github.com/mesh-js/mesh.js)              | ![](https://badgen.net/bundlephobia/min/@mesh.js/core)     |
 | [P5.js](https://p5js.org)                                  | ![](https://badgen.net/bundlephobia/min/p5)                |
