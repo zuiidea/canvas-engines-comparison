@@ -61,7 +61,7 @@ class DeckEngine extends Engine {
     }
     this.rects = rects;
 
-    if(!this.deckgl){
+    if (!this.deckgl) {
       const deckgl = new Deck({
         parent: this.canvas,
         width: this.width,
@@ -81,7 +81,7 @@ class DeckEngine extends Engine {
         ],
         initialViewState: {
           target: [this.width / 2, this.height / 2, 0],
-          zoom: 1,
+          zoom: 0,
         },
         controller: true,
       });
