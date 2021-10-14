@@ -11,7 +11,9 @@ class MeshEngine extends Engine {
   }
 
   async init() {
-    this.renderer = new Renderer(this.canvas);
+    this.renderer = new Renderer(this.canvas, {
+      contextType: "webgl2",
+    });
   }
 
   animate() {

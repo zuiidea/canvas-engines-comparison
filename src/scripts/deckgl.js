@@ -1,6 +1,48 @@
 import Engine from "./engine";
 import { Deck, OrthographicView } from "@deck.gl/core";
-import { LineLayer } from "@deck.gl/layers";
+import { ScatterplotLayer } from "@deck.gl/layers";
+
+const fs = `
+#define SHADER_NAME rect-layer-fragment-shader
+precision highp float;
+uniform bool filled;
+uniform float stroked;
+uniform bool antialiasing;
+varying vec4 vFillColor;
+varying vec4 vLineColor;
+varying vec2 unitPosition;
+varying float innerUnitRadius;
+varying float outerRadiusPixels;
+void main(void) {
+  geometry.uv = unitPosition;
+  float distToCenter = length(unitPosition) * outerRadiusPixels;
+  if (stroked > 0.5) {
+    float isLine = (unitPosition.x < -innerUnitRadius || unitPosition.x > innerUnitRadius || unitPosition.y < -innerUnitRadius || unitPosition.y > innerUnitRadius) ? 1.0 : 0.0;
+    if (filled) {
+      gl_FragColor = mix(vFillColor, vLineColor, isLine);
+    } else {
+      if (isLine == 0.0) {
+        discard;
+      }
+      gl_FragColor = vec4(vLineColor.rgb, vLineColor.a * isLine);
+    }
+  } else if (filled) {
+    gl_FragColor = vFillColor;
+  } else {
+    discard;
+  }
+  DECKGL_FILTER_COLOR(gl_FragColor, geometry);
+}
+`;
+
+class RectLayer extends ScatterplotLayer {
+  getShaders() {
+    return {
+      ...super.getShaders(),
+      fs,
+    };
+  }
+}
 
 class DeckEngine extends Engine {
   constructor() {
@@ -12,7 +54,7 @@ class DeckEngine extends Engine {
     this.trigger = 0;
   }
 
-  init() { }
+  init() {}
 
   animate() {
     const rects = this.rects;
@@ -39,16 +81,16 @@ class DeckEngine extends Engine {
     this.trigger = Date.now();
     this.deckgl.setProps({
       layers: [
-        new LineLayer({
+        new RectLayer({
           data: rects,
-          widthUnits: "meters",
-          getColor: () => [0, 0, 0, 255],
-          getSourcePosition: (d) => [d.x, d.y],
-          getWidth: (d) => d.size,
-          getTargetPosition: (d) => [d.x, d.y2],
+          stroked: true,
+          filled: true,
+          getPosition: (d) => [d.x, d.y],
+          getRadius: (d) => d.size,
+          getLineColor: [0, 0, 0],
+          getFillColor: [255, 255, 255],
           updateTriggers: {
-            getSourcePosition: this.trigger,
-            getTargetPosition: this.trigger,
+            getPosition: this.trigger,
           },
         }),
       ],
@@ -65,8 +107,8 @@ class DeckEngine extends Engine {
       const x = Math.random() * this.width;
       const y = Math.random() * this.height;
       const size =
-        (this.count.value > 7000 ? 2 : 5) +
-        Math.random() * (this.count.value > 7000 ? 2 : 10);
+        (this.count.value > 7000 ? 2 : 10) +
+        Math.random() * (this.count.value > 7000 ? 2 : 20);
       const speed = 1 + Math.random();
       rects[i] = { x, y, y2: size + y, size, speed };
     }
